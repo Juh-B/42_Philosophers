@@ -1,39 +1,5 @@
 #include "philo.h"
 
-void  error_exit(char *str)
-{
-  printf("%sError%s\n%s\n", RED_B, RESET, str);
-  exit(EXIT_FAILURE);
-}
-
-void cleanup(t_table *table)
-{
-  int i;
-
-  i = 0;
-  if (table->forks)
-  {
-    while (i < table->nbr_philos)
-    {
-      pthread_mutex_destroy(&table->forks[i].fork);
-      i++;
-    }
-    free(table->forks);
-  }
-  if (table->philos)
-  {
-    i = 0;
-    while (i < table->nbr_philos)
-    {
-      pthread_mutex_destroy(&table->philos[i].life_control);
-      i++;
-    }
-    free(table->philos);
-  }
-  pthread_mutex_destroy(&table->print_msg_mtx);
-  pthread_mutex_destroy(&table->table_mtx);
-}
-
 int	ft_isdigit(int c)
 {
 	if (c >= '0' && c <= '9')
@@ -66,6 +32,15 @@ int	ft_atoi(const char *nptr)
 	return (number * sign);
 }
 
+long current_time(void)
+{
+  struct timeval tv;
+
+  if (gettimeofday(&tv, NULL))
+    error_exit("Gettimeofday failed");
+  return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
+
 void  precise_sleep(long time, t_table *table)
 {
   long  start;
@@ -75,7 +50,7 @@ void  precise_sleep(long time, t_table *table)
   start = current_time();
   while (current_time() - start < time)
   {
-    if (simulation_finished(table))
+    if (table->end_simulation)
       break ;
     elapsed = current_time() - start;
     if (elapsed >= time)

@@ -1,39 +1,40 @@
 #include "philo.h"
 
-int simulation_finished(t_table *table)
+static int  philo_died(t_table *table, int *count)
 {
-   return (table->end_simulation);
+  int     i;
+
+  i = 0;
+  while (i < table->nbr_philos)
+  {
+    pthread_mutex_lock(&table->table_mtx);
+    if ((current_time() - table->philos[i].last_meal_time) > table->time_to_die)
+    {
+      print_msg(&table->philos[i], DIED);
+      table->end_simulation = 1;
+      pthread_mutex_unlock(&table->table_mtx);
+      return (1);
+    }
+    if (table->nbr_meals > 0 &&	table->philos[i].meals_eaten >= table->nbr_meals)
+      (*count)++;
+    pthread_mutex_unlock(&table->table_mtx);
+    i++;
+  }
+  return (0);
 }
 
-void  *monitor_dinner(void *arg)
+static void  *monitor_dinner(void *arg)
 {
   t_table *table;
-  int     i;
-  long		now;
-	int			full_count;
+	int			nbr_philos_full;
 
   table = (t_table *)arg;
 	while (!table->end_simulation)
 	{
-		i = 0;
-		full_count = 0;
-		while (i < table->nbr_philos)
-		{
-			pthread_mutex_lock(&table->table_mtx);
-			now = current_time();
-			if ((now - table->philos[i].last_meal_time) > table->time_to_die)
-			{
-				print_msg(&table->philos[i], DIED);
-				table->end_simulation = 1;
-				pthread_mutex_unlock(&table->table_mtx);
-				return (NULL);
-			}
-			if (table->nbr_meals > 0 &&	table->philos[i].meals_eaten >= table->nbr_meals)
-				full_count++;
-			pthread_mutex_unlock(&table->table_mtx);
-			i++;
-		}
-		if (table->nbr_meals > 0 && full_count == table->nbr_philos)
+    nbr_philos_full = 0;
+    if (philo_died(table, &nbr_philos_full))
+      return (NULL);
+		if (table->nbr_meals > 0 && nbr_philos_full == table->nbr_philos)
 		{
 			table->end_simulation = 1;
 			return (NULL);
@@ -43,7 +44,7 @@ void  *monitor_dinner(void *arg)
 	return (NULL);
 }
 
-void *philo_rotine(void *arg)
+static void *philo_rotine(void *arg)
 {
     t_philo *philo = (t_philo *)arg;
 
@@ -62,12 +63,6 @@ void *philo_rotine(void *arg)
       philo->meals_eaten++;
       print_msg(philo, EATING);
       precise_sleep(philo->table->time_to_eat, philo->table);
-      if (philo->table->nbr_meals > 0
-        && philo->meals_eaten == philo->table->nbr_meals)
-      {
-        philo->table->full_philos++;
-        // printf("PHILO %d is FULL\n", philo->id);
-      }
       pthread_mutex_unlock(&philo->second_fork->fork);
       pthread_mutex_unlock(&philo->first_fork->fork);
       print_msg(philo, SLEEPING);
@@ -80,10 +75,8 @@ void *philo_rotine(void *arg)
 int  simulation(t_table *table)
 {
   int i;
-  pthread_t monitor;
 
-  // pthread_create(&table->monitor, NULL, monitor_dinner, &table->monitor);
-  pthread_create(&monitor, NULL, monitor_dinner, table);
+  pthread_create(&table->monitor, NULL, monitor_dinner, table);
   i = 0;
   while (i < table->nbr_philos)
   {
@@ -91,14 +84,12 @@ int  simulation(t_table *table)
     i++;
   }
 
-  pthread_join(monitor, NULL);
-  // pthread_join(table->monitor, NULL);
+  pthread_join(table->monitor, NULL);
   i = 0;
   while (i < table->nbr_philos)
   {
     pthread_join(table->philos[i].thread_id, NULL);
     i++;
   }
-  // printf("End = %d\n", table->end_simulation);
   return (table->end_simulation);
 }

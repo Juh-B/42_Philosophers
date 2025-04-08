@@ -36,25 +36,19 @@ typedef enum  e_status
 
 typedef struct s_fork
 {
-  t_mtx fork;
   int   fork_id;
+  t_mtx fork;
 } t_fork;
 
 typedef struct s_philo
 {
     int       id;
-
     int       meals_eaten;
     long      last_meal_time;
-    // int       ate_all_meals;
-
-    t_fork     *first_fork;
-    t_fork     *second_fork;
-
-    t_mtx     life_control;
-    pthread_t thread_id;
-
+    t_fork    *first_fork;
+    t_fork    *second_fork;
     t_table   *table;
+    pthread_t thread_id;
 }   t_philo;
 
 typedef struct s_table
@@ -64,39 +58,37 @@ typedef struct s_table
     int       time_to_eat;
     int       time_to_sleep;
     int       nbr_meals;
-
     long      start_simulation;
     int       end_simulation;
-
-    int       full_philos;
-
     t_mtx     print_msg_mtx;
     t_mtx     table_mtx;
+    t_mtx     monitor_mtx;
     t_fork    *forks;
     t_philo   *philos;
-    // pthread_t monitor;
+    pthread_t monitor;
 }   t_table;
 
-// utils.c
+// error_clean.c
 void  error_exit(char *str);
-void  cleanup(t_table *table);
+void  clean_all(t_table *table);
+
+// init.c
+void  init_structs(t_table *table, int argc, char **argv);
+
+// mensagem.c
+void  print_msg(t_philo *philo, t_philo_status status);
+
+// simulation.c
+int  simulation(t_table *table);
+
+// utils.c
 int   ft_isdigit(int c);
 int	  ft_atoi(const char *nptr);
+long  current_time(void);
 void  precise_sleep(long time, t_table *table);
 
 // verif_input.c
 void  verif_input(int argc, char **argv);
 long  convert_arg(char *str);
-
-// init.c
-void  init_structs(t_table *table, int argc, char **argv);
-long  current_time(void);
-
-// simulation.c
-int  simulation(t_table *table);
-int   simulation_finished(t_table *table);
-
-// mensagem.c
-void  print_msg(t_philo *philo, t_philo_status status);
 
 #endif

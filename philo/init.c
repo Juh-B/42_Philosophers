@@ -1,15 +1,5 @@
 #include "philo.h"
 
-long current_time(void)
-{
-  struct timeval tv;
-
-  if (gettimeofday(&tv, NULL))
-    error_exit("Gettimeofday failed");
-  return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
-}
-
-
 static void  init_table(t_table *table, int argc, char **argv)
 {
   table->nbr_philos = convert_arg(argv[1]);
@@ -22,9 +12,9 @@ static void  init_table(t_table *table, int argc, char **argv)
     table->nbr_meals = 0;
   table->start_simulation = current_time();
   table->end_simulation = 0;
-  table->full_philos = 0;
   pthread_mutex_init(&table->print_msg_mtx, NULL);
   pthread_mutex_init(&table->table_mtx, NULL);
+  pthread_mutex_init(&table->monitor_mtx, NULL);
 }
 
 static void  init_forks(t_table *table)
@@ -38,7 +28,7 @@ static void  init_forks(t_table *table)
   while (i < table->nbr_philos)
   {
     pthread_mutex_init(&table->forks[i].fork, NULL);
-    table->forks[i].fork_id = i;
+    table->forks[i].fork_id = i + 1;
     i++;
   }
 }
@@ -50,7 +40,7 @@ static void  init_philos(t_table *table)
   table->philos = malloc(sizeof(t_philo) * table->nbr_philos);
   if (!table->philos)
   {
-    cleanup(table);
+    clean_all(table);
     error_exit("Malloc failed");
   }
   i = 0;
@@ -59,10 +49,8 @@ static void  init_philos(t_table *table)
     table->philos[i].id = i + 1;
     table->philos[i].meals_eaten = 0;
     table->philos[i].last_meal_time = table->start_simulation;
-    // table->philos[i].ate_all_meals = 0;
     table->philos[i].first_fork = &table->forks[i];
     table->philos[i].second_fork = &table->forks[(i + 1) % table->nbr_philos];
-    pthread_mutex_init(&table->philos[i].life_control, NULL);
     table->philos[i].table = table;
     if (table->philos[i].id % 2 == 0)
     {

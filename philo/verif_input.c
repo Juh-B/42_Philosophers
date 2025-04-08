@@ -20,8 +20,7 @@ long  convert_arg(char *str)
     error_exit("The input isn't a correct digit.\nUse only positive numbers.");
   else if (number == 0  || number > 2147483647)
     error_exit("The value needs to be between 1 and INT_MAX (2147483647).");
-  else
-    return (0);
+  return (0);
 }
 
 void  verif_input(int argc, char **argv)
