@@ -72,7 +72,7 @@ static void *philo_rotine(void *arg)
     return (NULL);
 }
 
-int  simulation(t_table *table)
+void  simulation(t_table *table)
 {
   int i;
 
@@ -91,5 +91,5 @@ int  simulation(t_table *table)
     pthread_join(table->philos[i].thread_id, NULL);
     i++;
   }
-  return (table->end_simulation);
+  // return (table->end_simulation);
 }

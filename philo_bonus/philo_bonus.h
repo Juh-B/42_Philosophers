@@ -1,11 +1,12 @@
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 #include <stdio.h> // printf
 #include <stdlib.h> // malloc, free
-#include <unistd.h> // write, usleep
-#include <pthread.h> // mutex: init, destroy, lock, unlock
-                    // threads: create, join, detach
+#include <unistd.h> // write, usleep, fork
+#include <pthread.h> // threads: create, join, detach
+#include <semaphore.h> // semaphore: open, wair, post, close, unlink
+#include <fcntl.h> // O_CREAT - sem_open
 #include <sys/time.h> // gettimeofday
 #include <limits.h> //INT_MAX
 
@@ -21,7 +22,7 @@
 # define EXP_INPUT "./philo <nbr_of_philos> <time_to_die> <time_to_eat> <time_to_sleep> [<nbr_times_must_eat>]\n"
 # define EXEMP_INPUT "Ex: ./philo 5 800 200 200 5"
 
-typedef pthread_mutex_t t_mtx;
+// typedef pthread_mutex_t t_mtx;
 typedef struct s_table t_table;
 
 typedef enum  e_status
@@ -34,21 +35,21 @@ typedef enum  e_status
   DIED,
 } t_philo_status;
 
-typedef struct s_fork
-{
-  int   fork_id;
-  t_mtx fork;
-} t_fork;
+// typedef struct s_fork
+// {
+//   int   fork_id;
+//   t_mtx fork;
+// } t_fork;
 
 typedef struct s_philo
 {
     int       id;
     int       meals_eaten;
     long      last_meal_time;
-    t_fork    *first_fork;
-    t_fork    *second_fork;
     t_table   *table;
-    pthread_t thread_id;
+    // t_fork    *first_fork;
+    // t_fork    *second_fork;
+    // pthread_t thread_id;
 }   t_philo;
 
 typedef struct s_table
@@ -58,12 +59,17 @@ typedef struct s_table
     int       time_to_eat;
     int       time_to_sleep;
     int       nbr_meals;
+
+    int       nbr_forks;
+
     long      start_simulation;
     int       end_simulation;
-    t_mtx     print_msg_mtx;
-    t_mtx     table_mtx;
-    t_mtx     monitor_mtx;
-    t_fork    *forks;
+
+    sem_t     *forks_sem;
+    sem_t     *print_msg_sem;
+    sem_t     *monitor_sem;
+    sem_t     *finish_sem;
+
     t_philo   *philos;
     pthread_t monitor;
 }   t_table;
@@ -88,7 +94,7 @@ long  current_time(void);
 void  precise_sleep(long time, t_table *table);
 
 // verif_input.c
-void  verif_input(int argc, char **argv);
 long  convert_arg(char *str);
+void  verif_input(int argc, char **argv);
 
 #endif
