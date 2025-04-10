@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcosta-b <jcosta-b@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/10 11:19:54 by jcosta-b          #+#    #+#             */
+/*   Updated: 2025/04/10 11:46:16 by jcosta-b         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 int	ft_isdigit(int c)
@@ -32,33 +44,33 @@ int	ft_atoi(const char *nptr)
 	return (number * sign);
 }
 
-long current_time(void)
+long	current_time(void)
 {
-  struct timeval tv;
+	struct timeval	tv;
 
-  if (gettimeofday(&tv, NULL))
-    error_exit("Gettimeofday failed");
-  return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+	if (gettimeofday(&tv, NULL))
+		error_exit("Gettimeofday failed");
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void  precise_sleep(long time, t_table *table)
+void	precise_sleep(long time, t_table *table)
 {
-  long  start;
-  long  elapsed;
-  long  remaining;
+	long	start;
+	long	elapsed;
+	long	remaining;
 
-  start = current_time();
-  while (current_time() - start < time)
-  {
-    if (table->end_simulation)
-      break ;
-    elapsed = current_time() - start;
-    if (elapsed >= time)
-      break;
-    remaining = time - elapsed;
-    if (remaining > 5)
-      usleep(remaining * 500);
-    else
-      usleep(100);
-  }
+	start = current_time();
+	while (current_time() - start < time)
+	{
+		if (table->end_simulation)
+			break ;
+		elapsed = current_time() - start;
+		if (elapsed >= time)
+			break ;
+		remaining = time - elapsed;
+		if (remaining > 5)
+			usleep(remaining * 500);
+		else
+			usleep(100);
+	}
 }
