@@ -2,7 +2,6 @@ NAME = philo
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread
-# VAL =  --tool=helgrind and "--tool=drd".
 
 OBJDIR = objs
 
