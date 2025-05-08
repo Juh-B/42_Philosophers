@@ -41,24 +41,29 @@ long current_time(void)
   return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void  precise_sleep(long time, t_table *table)
+void precise_sleep(long time, t_table *table)
 {
-  long  start;
+	long  start;
   long  elapsed;
   long  remaining;
 
   start = current_time();
-  while (current_time() - start < time)
-  {
-    if (table->end_simulation)
-      break ;
-    elapsed = current_time() - start;
-    if (elapsed >= time)
-      break;
-    remaining = time - elapsed;
-    if (remaining > 5)
-      usleep(remaining * 500);
-    else
-      usleep(100);
-  }
+	while (1)
+	{
+		pthread_mutex_lock(&table->monitor_mtx);
+		if (table->end_simulation)
+		{
+			pthread_mutex_unlock(&table->monitor_mtx);
+			break;
+		}
+		pthread_mutex_unlock(&table->monitor_mtx);
+		elapsed = current_time() - start;
+		if (elapsed >= time)
+			break;
+		remaining = time - elapsed;
+		if (remaining > 5)
+			usleep(remaining * 500);
+		else
+			usleep(100);
+	}
 }

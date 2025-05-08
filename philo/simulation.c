@@ -5,13 +5,16 @@ static int  philo_died(t_table *table, int *count)
   int     i;
 
   i = 0;
+  *count = 0;
   while (i < table->nbr_philos)
   {
     pthread_mutex_lock(&table->table_mtx);
     if ((current_time() - table->philos[i].last_meal_time) > table->time_to_die)
     {
       print_msg(&table->philos[i], DIED);
+      pthread_mutex_lock(&table->monitor_mtx);
       table->end_simulation = 1;
+      pthread_mutex_unlock(&table->monitor_mtx);
       pthread_mutex_unlock(&table->table_mtx);
       return (1);
     }
@@ -36,7 +39,9 @@ static void  *monitor_dinner(void *arg)
       return (NULL);
 		if (table->nbr_meals > 0 && nbr_philos_full == table->nbr_philos)
 		{
+			pthread_mutex_lock(&table->monitor_mtx);
 			table->end_simulation = 1;
+			pthread_mutex_unlock(&table->monitor_mtx);
 			return (NULL);
 		}
 		usleep(1000);
@@ -44,30 +49,44 @@ static void  *monitor_dinner(void *arg)
 	return (NULL);
 }
 
-static void *philo_rotine(void *arg)
+static void routine(t_philo *philo)
+{
+    pthread_mutex_lock(&philo->first_fork->fork);
+    print_msg(philo, FIRST_FORK);
+    pthread_mutex_lock(&philo->second_fork->fork);
+    print_msg(philo, SECOND_FORK);
+    pthread_mutex_lock(&philo->table->table_mtx);
+    philo->last_meal_time = current_time();
+    philo->meals_eaten++;
+    pthread_mutex_unlock(&philo->table->table_mtx);
+    print_msg(philo, EATING);
+    precise_sleep(philo->table->time_to_eat, philo->table);
+    pthread_mutex_unlock(&philo->second_fork->fork);
+    pthread_mutex_unlock(&philo->first_fork->fork);
+    print_msg(philo, SLEEPING);
+    precise_sleep(philo->table->time_to_sleep, philo->table);
+    print_msg(philo, THINKING);
+}
+
+static void *philo_routine(void *arg)
 {
     t_philo *philo = (t_philo *)arg;
 
-    while (!(philo->table->end_simulation))
+    while (1)
     {
+      pthread_mutex_lock(&philo->table->monitor_mtx);
+      if (philo->table->end_simulation)
+      {
+          pthread_mutex_unlock(&philo->table->monitor_mtx);
+          break ;
+      }
+      pthread_mutex_unlock(&philo->table->monitor_mtx);
       if (philo->table->nbr_philos == 1)
       {
         print_msg(philo, FIRST_FORK);
         break ;
       }
-      pthread_mutex_lock(&philo->first_fork->fork);
-      print_msg(philo, FIRST_FORK);
-      pthread_mutex_lock(&philo->second_fork->fork);
-      print_msg(philo, SECOND_FORK);
-      philo->last_meal_time = current_time();
-      philo->meals_eaten++;
-      print_msg(philo, EATING);
-      precise_sleep(philo->table->time_to_eat, philo->table);
-      pthread_mutex_unlock(&philo->second_fork->fork);
-      pthread_mutex_unlock(&philo->first_fork->fork);
-      print_msg(philo, SLEEPING);
-      precise_sleep(philo->table->time_to_sleep, philo->table);
-      print_msg(philo, THINKING);
+        routine(philo);
     }
     return (NULL);
 }
@@ -76,20 +95,23 @@ void  simulation(t_table *table)
 {
   int i;
 
-  pthread_create(&table->monitor, NULL, monitor_dinner, table);
+  if (pthread_create(&table->monitor, NULL, monitor_dinner, table) != 0)
+    error_exit("Failed to create thread");
   i = 0;
   while (i < table->nbr_philos)
   {
-    pthread_create(&table->philos[i].thread_id, NULL, philo_rotine, &table->philos[i]);
+    if (pthread_create(&table->philos[i].thread_id, NULL, philo_routine, \
+      &table->philos[i]) != 0)
+      error_exit("Failed to create thread");
     i++;
   }
-
-  pthread_join(table->monitor, NULL);
+  if (pthread_join(table->monitor, NULL) != 0)
+    error_exit("Failed to join thread");
   i = 0;
   while (i < table->nbr_philos)
   {
-    pthread_join(table->philos[i].thread_id, NULL);
+    if (pthread_join(table->philos[i].thread_id, NULL) != 0)
+      error_exit("Failed to join thread");
     i++;
   }
-  // return (table->end_simulation);
 }

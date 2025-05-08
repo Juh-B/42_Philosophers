@@ -18,8 +18,11 @@
 # define CYAN_B  "\033[1;36m"
 # define WHITE_B  "\033[1;37m"
 
-# define EXP_INPUT "./philo <nbr_of_philos> <time_to_die> <time_to_eat> <time_to_sleep> [<nbr_times_must_eat>]\n"
+# define EXP_INPUT "./philo <nbr_of_philos> <time_to_die> <time_to_eat> \
+<time_to_sleep> [<nbr_times_must_eat>]\n"
 # define EXEMP_INPUT "Ex: ./philo 5 800 200 200 5"
+# define VALID_NBR "The value must be a positive integer between \
+1 and 2147483647"
 
 typedef pthread_mutex_t t_mtx;
 typedef struct s_table t_table;
@@ -75,7 +78,7 @@ void  clean_all(t_table *table);
 // init.c
 void  init_structs(t_table *table, int argc, char **argv);
 
-// mensagem.c
+// message.c
 void  print_msg(t_philo *philo, t_philo_status status);
 
 // simulation.c
