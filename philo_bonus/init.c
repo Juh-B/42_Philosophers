@@ -1,7 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcosta-b <jcosta-b@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/23 16:53:11 by jcosta-b          #+#    #+#             */
+/*   Updated: 2025/06/23 16:59:48 by jcosta-b         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo_bonus.h"
 
 static void	init_table(t_table *table, int argc, char **argv)
 {
+	clean_sem(table);
 	table->nbr_philos = convert_arg(argv[1], table);
 	table->time_to_die = convert_arg(argv[2], table);
 	table->time_to_eat = convert_arg(argv[3], table);
@@ -17,8 +30,8 @@ static void	init_table(t_table *table, int argc, char **argv)
 	table->ckeck_meal_sem = sem_open("/ckeck_meal_sem", O_CREAT, 0644, 1);
 	table->print_msg_sem = sem_open("/msg_sem", O_CREAT, 0644, 1);
 	table->death_sem = sem_open("/death_sem", O_CREAT, 0644, 1);
-	if (table->forks_sem == SEM_FAILED || table->ckeck_meal_sem == SEM_FAILED ||
-		table->print_msg_sem == SEM_FAILED || table->death_sem == SEM_FAILED)
+	if (table->forks_sem == SEM_FAILED || table->ckeck_meal_sem == SEM_FAILED \
+		|| table->print_msg_sem == SEM_FAILED || table->death_sem == SEM_FAILED)
 	{
 		perror("sem_open");
 		exit(1);

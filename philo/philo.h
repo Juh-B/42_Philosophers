@@ -6,7 +6,7 @@
 /*   By: jcosta-b <jcosta-b@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 11:19:16 by jcosta-b          #+#    #+#             */
-/*   Updated: 2025/04/10 13:09:12 by jcosta-b         ###   ########.fr       */
+/*   Updated: 2025/06/23 17:02:33 by jcosta-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,16 @@
 # include <sys/time.h> // gettimeofday
 # include <limits.h> //INT_MAX
 # include <pthread.h> // mutex: init, destroy, lock, unlock
-					 // threads: create, join, detach
+					// threads: create, join, detach
 
-# define RESET  "\001\033[0m\002"
-# define RED_B  "\001\033[1;31m\002"
-# define GREEN  "\001\033[0;32m\002"
-# define GREEN_B  "\001\033[1;32m\002"
-# define YELLOW  "\001\033[0;33m\002"
-# define YELLOW_B  "\001\033[1;33m\002"
-# define CYAN_B  "\001\033[1;36m\002"
-# define WHITE_B  "\001\033[1;37m\002"
+# define RESET  "\033[0m"
+# define RED_B  "\033[1;31m"
+# define GREEN  "\033[0;32m"
+# define GREEN_B  "\033[1;32m"
+# define YELLOW  "\033[0;33m"
+# define YELLOW_B  "\033[1;33m"
+# define CYAN_B  "\033[1;36m"
+# define WHITE_B  "\033[1;37m"
 
 # define EXP_INPUT "./philo <nbr_of_philos> <time_to_die> <time_to_eat> \
 <time_to_sleep> [<nbr_times_must_eat>]\n"

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_bonus.h                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcosta-b <jcosta-b@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/23 16:53:48 by jcosta-b          #+#    #+#             */
+/*   Updated: 2025/06/23 17:02:12 by jcosta-b         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_BONUS_H
 # define PHILO_BONUS_H
 
@@ -12,14 +24,14 @@
 # include <signal.h> // signal
 # include <sys/wait.h> // waitpid
 
-# define RESET  "\001\033[0m\002"
-# define RED_B  "\001\033[1;31m\002"
-# define GREEN  "\001\033[0;32m\002"
-# define GREEN_B  "\001\033[1;32m\002"
-# define YELLOW  "\001\033[0;33m\002"
-# define YELLOW_B  "\001\033[1;33m\002"
-# define CYAN_B  "\001\033[1;36m\002"
-# define WHITE_B  "\001\033[1;37m\002"
+# define RESET  "\033[0m"
+# define RED_B  "\033[1;31m"
+# define GREEN  "\033[0;32m"
+# define GREEN_B  "\033[1;32m"
+# define YELLOW  "\033[0;33m"
+# define YELLOW_B  "\033[1;33m"
+# define CYAN_B  "\033[1;36m"
+# define WHITE_B  "\033[1;37m"
 
 # define EXP_INPUT "./philo <nbr_of_philos> <time_to_die> <time_to_eat> \
 <time_to_sleep> [<nbr_times_must_eat>]\n"
@@ -27,9 +39,9 @@
 # define VALID_NBR "The value must be a positive integer between \
 1 and 2147483647"
 
-typedef struct	s_table t_table;
+typedef struct s_table	t_table;
 
-typedef enum 	e_status
+typedef enum e_status
 {
 	FIRST_FORK,
 	SECOND_FORK,
@@ -39,7 +51,7 @@ typedef enum 	e_status
 	DIED,
 }	t_philo_status;
 
-typedef struct	s_philo
+typedef struct s_philo
 {
 	int		id;
 	int		meals_eaten;
@@ -48,7 +60,7 @@ typedef struct	s_philo
 	t_table	*table;
 }	t_philo;
 
-typedef struct	s_table
+typedef struct s_table
 {
 	int		nbr_philos;
 	int		time_to_die;
@@ -68,6 +80,7 @@ typedef struct	s_table
 // error_clean.c
 void	error_exit(char *str, t_table *table);
 void	clean_all(t_table *table);
+void	clean_sem(t_table *table);
 
 // init.c
 void	init_structs(t_table *table, int argc, char **argv);

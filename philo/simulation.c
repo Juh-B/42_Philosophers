@@ -6,7 +6,7 @@
 /*   By: jcosta-b <jcosta-b@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 11:19:34 by jcosta-b          #+#    #+#             */
-/*   Updated: 2025/04/10 13:11:57 by jcosta-b         ###   ########.fr       */
+/*   Updated: 2025/06/23 16:41:00 by jcosta-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	philo_died(t_table *table, int *count)
 			pthread_mutex_unlock(&table->table_mtx);
 			return (1);
 		}
-		if (table->nbr_meals > 0 &&\
+		if (table->nbr_meals > 0 && \
 			table->philos[i].meals_eaten >= table->nbr_meals)
 			(*count)++;
 		pthread_mutex_unlock(&table->table_mtx);
@@ -84,8 +84,9 @@ static void	routine(t_philo *philo)
 
 static void	*philo_routine(void *arg)
 {
-	t_philo	*philo = (t_philo *)arg;
+	t_philo	*philo;
 
+	philo = (t_philo *)arg;
 	while (1)
 	{
 		pthread_mutex_lock(&philo->table->monitor_mtx);
@@ -116,7 +117,7 @@ void	simulation(t_table *table)
 	{
 		if (pthread_create(&table->philos[i].thread_id, NULL, philo_routine, \
 		&table->philos[i]) != 0)
-		error_exit("Failed to create thread");
+			error_exit("Failed to create thread");
 		i++;
 	}
 	if (pthread_join(table->monitor, NULL) != 0)

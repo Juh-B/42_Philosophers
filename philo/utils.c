@@ -6,7 +6,7 @@
 /*   By: jcosta-b <jcosta-b@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 11:19:54 by jcosta-b          #+#    #+#             */
-/*   Updated: 2025/04/10 11:46:16 by jcosta-b         ###   ########.fr       */
+/*   Updated: 2025/06/23 16:38:52 by jcosta-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,12 @@ void	precise_sleep(long time, t_table *table)
 		if (table->end_simulation)
 		{
 			pthread_mutex_unlock(&table->monitor_mtx);
-			break;
+			break ;
 		}
 		pthread_mutex_unlock(&table->monitor_mtx);
 		elapsed = current_time() - start;
 		if (elapsed >= time)
-			break;
+			break ;
 		remaining = time - elapsed;
 		if (remaining > 5)
 			usleep(remaining * 500);

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   simulation.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcosta-b <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/23 16:53:56 by jcosta-b          #+#    #+#             */
+/*   Updated: 2025/06/23 16:53:58 by jcosta-b         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo_bonus.h"
 
 void	monitor_philo(t_philo *philo)
@@ -54,7 +66,7 @@ void	parent_process(t_table *table)
 {
 	int	i;
 	int	j;
-	int status;
+	int	status;
 
 	i = 0;
 	status = 0;
@@ -69,7 +81,7 @@ void	parent_process(t_table *table)
 				kill(table->philos[j].pid, SIGKILL);
 				j++;
 			}
-			break;
+			break ;
 		}
 		i++;
 	}

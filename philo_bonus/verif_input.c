@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   verif_input.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcosta-b <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/23 16:54:12 by jcosta-b          #+#    #+#             */
+/*   Updated: 2025/06/23 16:54:14 by jcosta-b         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo_bonus.h"
 
 long	convert_arg(char *str, t_table *table)
@@ -18,7 +30,7 @@ long	convert_arg(char *str, t_table *table)
 		return (number);
 	else if (!ft_isdigit(str[i]))
 		error_exit("The input isn't a correct digit.\n"VALID_NBR, table);
-	else if (number == 0  || number > 2147483647)
+	else if (number == 0 || number > 2147483647)
 		error_exit(VALID_NBR, table);
 	return (0);
 }

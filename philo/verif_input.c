@@ -6,7 +6,7 @@
 /*   By: jcosta-b <jcosta-b@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 11:20:17 by jcosta-b          #+#    #+#             */
-/*   Updated: 2025/04/10 11:39:08 by jcosta-b         ###   ########.fr       */
+/*   Updated: 2025/06/23 15:45:10 by jcosta-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ long	convert_arg(char *str)
 		return (number);
 	else if (!ft_isdigit(str[i]))
 		error_exit("The input isn't a correct digit.\n"VALID_NBR);
-	else if (number == 0  || number > 2147483647)
+	else if (number == 0 || number > 2147483647)
 		error_exit(VALID_NBR);
 	return (0);
 }
@@ -38,7 +38,7 @@ long	convert_arg(char *str)
 void	verif_input(int argc, char **argv)
 {
 	int		i;
-	long 	value;
+	long	value;
 
 	i = 1;
 	while (i < argc)
