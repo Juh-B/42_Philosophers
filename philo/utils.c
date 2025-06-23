@@ -53,13 +53,13 @@ long	current_time(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void precise_sleep(long time, t_table *table)
+void	precise_sleep(long time, t_table *table)
 {
-	long  start;
-  long  elapsed;
-  long  remaining;
+	long	start;
+	long	elapsed;
+	long	remaining;
 
-  start = current_time();
+	start = current_time();
 	while (1)
 	{
 		pthread_mutex_lock(&table->monitor_mtx);

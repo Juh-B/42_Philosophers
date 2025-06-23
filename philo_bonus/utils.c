@@ -32,33 +32,33 @@ int	ft_atoi(const char *nptr)
 	return (number * sign);
 }
 
-long current_time(void)
+long	current_time(t_table *table)
 {
-  struct timeval tv;
+	struct timeval	tv;
 
-  if (gettimeofday(&tv, NULL))
-    error_exit("Gettimeofday failed");
-  return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+	if (gettimeofday(&tv, NULL))
+		error_exit("Gettimeofday failed", table);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void  precise_sleep(long time, t_table *table)
+void	precise_sleep(long time, t_table *table)
 {
-  long  start;
-  long  elapsed;
-  long  remaining;
+	long	start;
+	long	elapsed;
+	long	remaining;
 
-  start = current_time();
-  while (current_time() - start < time)
-  {
-    if (table->end_simulation)
-      break ;
-    elapsed = current_time() - start;
-    if (elapsed >= time)
-      break;
-    remaining = time - elapsed;
-    if (remaining > 5)
-      usleep(remaining * 500);
-    else
-      usleep(100);
-  }
+	start = current_time(table);
+	while (current_time(table) - start < time)
+	{
+		if (table->end_simulation)
+			break ;
+		elapsed = current_time(table) - start;
+		if (elapsed >= time)
+			break ;
+		remaining = time - elapsed;
+		if (remaining > 5)
+			usleep((remaining * 100) / 2);
+		else
+			usleep(100);
+	}
 }

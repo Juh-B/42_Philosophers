@@ -14,6 +14,9 @@ GREEN = \033[0;32m
 GREEN_B = \033[1;32m
 RESET = \033[0m
 
+# verif proc aberto lsof -c philo
+# threads operando ps aux | grep philo
+
 ARGS =
 
 all: $(OBJDIR) $(NAME)
