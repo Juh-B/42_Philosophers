@@ -6,7 +6,7 @@
 /*   By: jcosta-b <jcosta-b@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 16:53:48 by jcosta-b          #+#    #+#             */
-/*   Updated: 2025/06/23 17:02:12 by jcosta-b         ###   ########.fr       */
+/*   Updated: 2025/06/26 12:30:06 by jcosta-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,12 +92,15 @@ void	print_msg(t_philo *philo, t_philo_status status);
 void	simulation(t_table *table);
 
 // utils.c
-int		ft_isdigit(int c);
-int		ft_atoi(const char *nptr);
-long	current_time(t_table *table);
+void	monitor_philo(t_philo *philo);
+void	waiting_forks(t_philo *philo);
+void	full_philo(t_philo *philo);
 void	precise_sleep(long time, t_table *table);
+long	current_time(t_table *table);
 
 // verif_input.c
+int		ft_isdigit(int c);
+int		ft_atoi(const char *nptr);
 long	convert_arg(char *str, t_table *table);
 void	verif_input(int argc, char **argv, t_table *table);
 

@@ -3,35 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcosta-b <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcosta-b <jcosta-b@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 16:53:56 by jcosta-b          #+#    #+#             */
-/*   Updated: 2025/06/23 16:53:58 by jcosta-b         ###   ########.fr       */
+/*   Updated: 2025/06/26 12:31:59 by jcosta-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
-
-void	monitor_philo(t_philo *philo)
-{
-	if ((current_time(philo->table) - philo->last_meal_time) > philo->table->time_to_die)
-	{
-		print_msg(philo, DIED);
-		sem_post(philo->table->ckeck_meal_sem);
-		clean_all(philo->table);
-		exit(1);
-	}
-}
-
-void	waiting_forks(t_philo *philo)
-{
-	while (*(int16_t *)philo->table->forks_sem < 2)
-	{
-		sem_wait(philo->table->ckeck_meal_sem);
-		monitor_philo(philo);
-		sem_post(philo->table->ckeck_meal_sem);
-	}
-}
 
 void	philo_routine(t_philo *philo)
 {
@@ -51,18 +30,16 @@ void	philo_routine(t_philo *philo)
 		precise_sleep(philo->table->time_to_eat, philo->table);
 		sem_post(philo->table->forks_sem);
 		sem_post(philo->table->forks_sem);
-		if (philo->table->nbr_meals > 0 && philo->meals_eaten >= philo->table->nbr_meals)
-		{
-			clean_all(philo->table);
-			exit(0);
-		}
+		if (philo->table->nbr_meals > 0 && \
+			philo->meals_eaten >= philo->table->nbr_meals)
+			full_philo(philo);
 		print_msg(philo, SLEEPING);
 		precise_sleep(philo->table->time_to_sleep, philo->table);
 		print_msg(philo, THINKING);
 	}
 }
 
-void	parent_process(t_table *table)
+void	finish_simulation(t_table *table)
 {
 	int	i;
 	int	j;
@@ -101,5 +78,5 @@ void	simulation(t_table *table)
 			philo_routine(&table->philos[i]);
 		i++;
 	}
-	parent_process(table);
+	finish_simulation(table);
 }

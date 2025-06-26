@@ -3,45 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcosta-b <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcosta-b <jcosta-b@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 16:54:04 by jcosta-b          #+#    #+#             */
-/*   Updated: 2025/06/23 16:54:05 by jcosta-b         ###   ########.fr       */
+/*   Updated: 2025/06/26 12:26:45 by jcosta-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-int	ft_isdigit(int c)
+void	monitor_philo(t_philo *philo)
 {
-	if (c >= '0' && c <= '9')
-		return (1);
-	return (0);
+	if ((current_time(philo->table) - philo->last_meal_time) > \
+	philo->table->time_to_die)
+	{
+		print_msg(philo, DIED);
+		sem_post(philo->table->ckeck_meal_sem);
+		clean_all(philo->table);
+		exit(1);
+	}
 }
 
-int	ft_atoi(const char *nptr)
+void	waiting_forks(t_philo *philo)
 {
-	int	i;
-	int	sign;
-	int	number;
+	if (philo->id % 2 == 0)
+		usleep(500);
+	while (*(int16_t *)philo->table->forks_sem < 2)
+	{
+		sem_wait(philo->table->ckeck_meal_sem);
+		monitor_philo(philo);
+		sem_post(philo->table->ckeck_meal_sem);
+	}
+}
 
-	i = 0;
-	sign = 1;
-	number = 0;
-	while (nptr[i] == 32 || (nptr[i] >= 9 && nptr[i] <= 13))
-		i++;
-	if (nptr[i] == '+' || nptr[i] == '-')
-	{
-		if (nptr[i] == '-')
-			sign *= -1;
-		i++;
-	}
-	while (ft_isdigit(nptr[i]) > 0)
-	{
-		number = (number * 10) + (nptr[i] - '0');
-		i++;
-	}
-	return (number * sign);
+void	full_philo(t_philo *philo)
+{
+	clean_all(philo->table);
+	exit(0);
 }
 
 long	current_time(t_table *table)

@@ -6,7 +6,7 @@
 /*   By: jcosta-b <jcosta-b@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 11:17:44 by jcosta-b          #+#    #+#             */
-/*   Updated: 2025/06/23 17:13:40 by jcosta-b         ###   ########.fr       */
+/*   Updated: 2025/06/26 12:33:03 by jcosta-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void	init_forks(t_table *table)
 
 static void	set_philos(t_table *table)
 {
-	int	i;
+	int		i;
 	t_fork	*fork_nbr;
 
 	i = 0;
@@ -79,35 +79,6 @@ static void	init_philos(t_table *table)
 	}
 	set_philos(table);
 }
-
-// static void	init_philos(t_table *table)
-// {
-// 	// int	i;
-
-// 	table->philos = malloc(sizeof(t_philo) * table->nbr_philos);
-// 	if (!table->philos)
-// 	{
-// 		clean_all(table);
-// 		error_exit("Malloc failed");
-// 	}
-// 	set_philos(table);
-// 	// i = 0;
-// 	// while (i < table->nbr_philos)
-// 	// {
-// 	// 	table->philos[i].id = i + 1;
-// 	// 	table->philos[i].meals_eaten = 0;
-// 	// 	table->philos[i].last_meal_time = table->start_simulation;
-// 	// 	table->philos[i].first_fork = &table->forks[i];
-// 	// 	table->philos[i].second_fork = &table->forks[(i + 1) % table->nbr_philos];
-// 	// 	table->philos[i].table = table;
-// 	// 	if (table->philos[i].id % 2 == 0)
-// 	// 	{
-// 	// 		table->philos[i].first_fork = &table->forks[(i + 1) % table->nbr_philos];
-// 	// 		table->philos[i].second_fork = &table->forks[i];
-// 	// 	}
-// 	// 	i++;
-// 	// }
-// }
 
 void	init_structs(t_table *table, int argc, char **argv)
 {
